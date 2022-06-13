@@ -1,6 +1,5 @@
 package com.fflog.fflogbot.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import graphql.kickstart.spring.webclient.boot.GraphQLRequest;
 import graphql.kickstart.spring.webclient.boot.GraphQLResponse;
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
