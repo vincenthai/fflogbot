@@ -1,0 +1,10 @@
+query($code:String $fightId:[Int]) {
+    reportData {
+        report(code:$code) {
+            fights(fightIDs:$fightId) {
+                startTime
+                endTime
+            }
+        }
+    }
+}

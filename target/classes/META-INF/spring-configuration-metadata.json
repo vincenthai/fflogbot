@@ -1,0 +1,78 @@
+{
+  "groups": [
+    {
+      "name": "",
+      "type": "net.dv8tion.jda.api.JDA",
+      "sourceType": "com.fflog.fflogbot.FflogbotApplication",
+      "sourceMethod": "discordApi()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "audio-managers",
+      "type": "java.util.List<net.dv8tion.jda.api.managers.AudioManager>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "categories",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.Category>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "emotes",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.Emote>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "guilds",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.Guild>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "news-channels",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.NewsChannel>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "private-channels",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.PrivateChannel>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "roles",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.Role>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "stage-channels",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.StageChannel>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "store-channels",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.StoreChannel>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "text-channels",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.TextChannel>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "thread-channels",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.ThreadChannel>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "users",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.User>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    },
+    {
+      "name": "voice-channels",
+      "type": "java.util.List<net.dv8tion.jda.api.entities.VoiceChannel>",
+      "sourceType": "net.dv8tion.jda.api.JDA"
+    }
+  ],
+  "hints": []
+}
