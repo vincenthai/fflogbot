@@ -13,6 +13,7 @@ public abstract class Tier {
     public List<Encounter> encounters = new LinkedList<>();
     public String errorMsg;
     public Map<Integer,String> encounter2Acronym;
+    public String lodestoneId;
 
     public void addEncounter(Encounter encounter) {
         encounters.add(encounter);

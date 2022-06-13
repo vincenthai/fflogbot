@@ -10,7 +10,8 @@ other dependencies that handle OAuth2 and GraphQL queries to [fflogs](https://ww
 ## Pre-requisites
 * Coretto JDK 17+
 * IntelliJ (optional)
-* fflogs account
+* [Gradle](https://gradle.org/install/) 7.4.2+
+* [FFLogs](https://www.fflogs.com/) Account
 
 ## Usage
 * Checkout the repo and create a new file under `src/main/resources` called `application.properties`.
