@@ -5,7 +5,7 @@ query ($name:String $server:String $encounter:Int){
             serverSlug: $server
             serverRegion: "na"
         ) {
-            encounterRankings(encounterID:$encounter difficulty:101)
+            encounterRankings(encounterID:$encounter difficulty:101), lodestoneID
         }
     }
 }

@@ -6,8 +6,11 @@ import com.fflog.fflogbot.handlers.ResponseHandler;
 import com.fflog.fflogbot.model.Asphodelos;
 import com.fflog.fflogbot.model.Tier;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -64,13 +67,10 @@ public class CharacterListener extends ListenerAdapter {
         Tier asphodelos = new Asphodelos();
         try {
             responseHandler.handleEncounter(channel,asphodelos, charName, server, 78, 79, 80, 81, 82);
-            String payload = messageHandler.packMessage(asphodelos);
-            if(payload.isEmpty()) {
-                payload = "No savage parses found for this scrub!";
-            }
-            channel.sendMessage(payload).queue();
+            EmbedBuilder embedBuilder = messageHandler.packMessage(asphodelos, charName, server);
             watcher.stop();
-            channel.sendMessageFormat("**Total command runtime**: %d secs",watcher.getLastTaskTimeMillis()/1000).queue();
+            embedBuilder.setFooter("Parse processing completed in: " + watcher.getLastTaskTimeMillis()/1000 + " secs");
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
         }
         catch (RuntimeException e) {
             watcher.stop();

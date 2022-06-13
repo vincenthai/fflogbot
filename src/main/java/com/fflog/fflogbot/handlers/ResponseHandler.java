@@ -2,6 +2,7 @@ package com.fflog.fflogbot.handlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fflog.fflogbot.client.ClientWrapper;
 import com.fflog.fflogbot.model.Encounter;
@@ -76,6 +77,9 @@ public class ResponseHandler {
             }
 
             asphodelos.addEncounter(new Encounter(encounterId, totalKills, parseRanks(charName,ranks)));
+            // unfortunate repetitive call for now to set the lodestone id
+            IntNode lodestoneId = (IntNode) characterData.get("character").get("lodestoneID");
+            asphodelos.setLodestoneId(lodestoneId.asText());
         });
     }
 

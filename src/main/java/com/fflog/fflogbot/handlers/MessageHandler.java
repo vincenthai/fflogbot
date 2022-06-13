@@ -2,9 +2,19 @@ package com.fflog.fflogbot.handlers;
 
 import com.fflog.fflogbot.model.Rank;
 import com.fflog.fflogbot.model.Tier;
+import net.dv8tion.jda.api.EmbedBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
 
 
@@ -12,35 +22,37 @@ import java.text.DecimalFormat;
 public class MessageHandler {
     @Autowired
     EncounterHandler encounterHandler;
+    private final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 
-    public String packMessage(Tier tier) {
-        StringBuilder resp = new StringBuilder("");
+    public EmbedBuilder packMessage(Tier tier, String charName, String server) {
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setTitle(WordUtils.capitalizeFully(charName) + " from " + StringUtils.capitalize(server));
+        String lodestoneId = tier.getLodestoneId();
+        Document doc;
+        String imgSrc = "";
+        int avg = 0;
+        try {
+            doc = Jsoup.parse(new URL("https://na.finalfantasyxiv.com/lodestone/character/"+lodestoneId+"/"),20000);
+            Element img = doc.select("img[src*=640x873.jpg]").first();
+            imgSrc = img.getElementsByAttribute("src").first().attr("src");
+        } catch (IOException e) {
+            logger.error("couldn't get lodestone character image for lodestone id {}", lodestoneId);
+        }
+
+        if(StringUtils.isNotEmpty(imgSrc)) {
+            embedBuilder.setThumbnail(imgSrc);
+        }
+
         tier.getEncounters().forEach(encounter -> {
             int totalKills = encounter.getTotalKills();
             Rank topRank = encounterHandler.getTopRank(encounter.getRanks());
-            resp
-                .append("__")
-                .append(tier.getEncounter2Acronym().get(encounter.getEncounterId()))
-                .append("__ \n")
-                .append("  **")
-                .append("Total Kills**: ")
-                .append(totalKills)
-                .append("\n")
-                .append("  **")
-                .append("Top Parse**: ")
-                .append((int)topRank.getRankPercent());
-                if(topRank.getRankPercent() > 0) {
-                    resp.append(" as ")
-                    .append(topRank.getSpec());
-                }
-            resp
-                .append("\n")
-                .append("  **")
-                .append("Avg Dmg ↓**: ")
-                .append(new DecimalFormat("0.00").
-                        format(encounterHandler.getAverageDebuffs(encounter.getRanks(), encounter.getTotalKills())))
-                .append("\n");
+            embedBuilder.addField(tier.getEncounter2Acronym().get(encounter.getEncounterId()) + " Kills",String.valueOf(totalKills),true);
+            embedBuilder.addField("Top Parse",String.valueOf((int)topRank.getRankPercent()),true);
+            embedBuilder.addField("Avg Dmg ↓",new DecimalFormat("0.00").
+                    format(encounterHandler.getAverageDebuffs(encounter.getRanks(), encounter.getTotalKills())),true);
+
         });
-        return resp.toString();
+
+        return embedBuilder;
     }
 }
