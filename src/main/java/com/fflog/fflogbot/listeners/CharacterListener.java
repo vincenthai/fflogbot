@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.apache.commons.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,9 @@ public class CharacterListener extends ListenerAdapter {
         }
         catch (RuntimeException e) {
             watcher.stop();
-            throw e;
+            channel.sendMessageEmbeds(new EmbedBuilder()
+                    .setTitle("Failed to process " + WordUtils.capitalizeFully(charName) + " from " + WordUtils.capitalize(server))
+                    .setImage("https://i.kym-cdn.com/photos/images/newsfeed/001/889/560/b85.gif").build()).queue();
         }
         finally {
             asphodelos.clearEncounters();
