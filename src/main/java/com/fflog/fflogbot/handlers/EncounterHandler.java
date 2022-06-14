@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Component
 public class EncounterHandler {
@@ -21,10 +22,10 @@ public class EncounterHandler {
                 .orElse(new Rank());
     }
 
+    // calculate percentage rate of getting damage down
     public float getAverageDebuffs(List<Rank> ranks, int totalKills) {
-        if(totalKills == 0) return 0;
-        AtomicInteger debuffs = new AtomicInteger(0);
-        ranks.forEach(rank -> debuffs.addAndGet(rank.getDebuffs()));
-        return (float)debuffs.get()/totalKills;
+        if (totalKills == 0) return 0;
+        int fightsWithDmgDown = (int) ranks.stream().filter(rank -> rank.getDebuffs() > 0).count();
+        return (float)fightsWithDmgDown/totalKills;
     }
 }

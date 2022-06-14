@@ -50,7 +50,7 @@ public class MessageHandler {
             Rank topRank = encounterHandler.getTopRank(encounter.getRanks());
             embedBuilder.addField(tier.getEncounter2Acronym().get(encounter.getEncounterId()) + " Kills",String.valueOf(totalKills),true);
             embedBuilder.addField("Top Parse",String.valueOf((int)topRank.getRankPercent()),true);
-            embedBuilder.addField("Avg Dmg ↓",new DecimalFormat("0.00").
+            embedBuilder.addField("% Dmg ↓",new DecimalFormat("0.00").
                     format(encounterHandler.getAverageDebuffs(encounter.getRanks(), encounter.getTotalKills())),true);
 
             atomicTotal.addAndGet((int) topRank.getRankPercent());
