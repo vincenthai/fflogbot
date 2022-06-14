@@ -12,6 +12,7 @@ import com.fflog.fflogbot.model.Tier;
 import com.fflog.fflogbot.util.HandlerUtil;
 import graphql.kickstart.spring.webclient.boot.GraphQLResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,6 @@ public class ResponseHandler {
 
     private String reportQuery;
     private String debuffQuery;
-    private MessageChannel channel;
     private final StopWatch watcher = new StopWatch();
     private final Logger logger = LoggerFactory.getLogger(ResponseHandler.class);
 
@@ -44,11 +44,10 @@ public class ResponseHandler {
         return util.getAbout();
     }
 
-    public void handleEncounter(MessageChannel channel,Tier asphodelos, String charName, String server, int... encounterIds) {
+    public void handleEncounter(Tier asphodelos, String charName, String server, int... encounterIds) {
         logger.info("starting graphql gen for fflog apis...");
         reportQuery = util.getReportQuery();
         debuffQuery = util.getDebuffQuery();
-        this.channel = channel;
         Arrays.stream(encounterIds).forEach(encounterId -> {
             logger.info("characterDetail graphql api starting...");
             watcher.start();

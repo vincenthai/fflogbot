@@ -69,13 +69,13 @@ public class MessageHandler {
             embedBuilder.setColor(Color.GREEN);
         }
         else if (avg < 75) {
-            embedBuilder.setColor(Color.BLUE);
+            embedBuilder.setColor(Color.decode("#0070dd"));
         }
         else if (avg < 95) {
-            embedBuilder.setColor(Color.MAGENTA);
+            embedBuilder.setColor(Color.decode("#a335ee"));
         }
         else if (avg < 99) {
-            embedBuilder.setColor(Color.ORANGE);
+            embedBuilder.setColor(Color.decode("#ff8000"));
         }
         else if (avg == 99) {
             embedBuilder.setColor(Color.PINK);
