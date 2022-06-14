@@ -13,9 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 @Component
@@ -30,7 +32,7 @@ public class MessageHandler {
         String lodestoneId = tier.getLodestoneId();
         Document doc;
         String imgSrc = "";
-        int avg = 0;
+        AtomicInteger atomicTotal = new AtomicInteger();
         try {
             doc = Jsoup.parse(new URL("https://na.finalfantasyxiv.com/lodestone/character/"+lodestoneId+"/"),20000);
             Element img = doc.select("img[src*=640x873.jpg]").first();
@@ -51,7 +53,36 @@ public class MessageHandler {
             embedBuilder.addField("Avg Dmg ↓",new DecimalFormat("0.00").
                     format(encounterHandler.getAverageDebuffs(encounter.getRanks(), encounter.getTotalKills())),true);
 
+            atomicTotal.addAndGet((int) topRank.getRankPercent());
+
         });
+
+        int avg = 0;
+        if(!tier.getEncounters().isEmpty()) {
+            avg = atomicTotal.get() / tier.getEncounters().size();
+        }
+
+        if(avg < 25) {
+            embedBuilder.setColor(Color.GRAY);
+        }
+        else if (avg < 50) {
+            embedBuilder.setColor(Color.GREEN);
+        }
+        else if (avg < 75) {
+            embedBuilder.setColor(Color.BLUE);
+        }
+        else if (avg < 95) {
+            embedBuilder.setColor(Color.MAGENTA);
+        }
+        else if (avg < 99) {
+            embedBuilder.setColor(Color.ORANGE);
+        }
+        else if (avg == 99) {
+            embedBuilder.setColor(Color.PINK);
+        }
+        else if (avg == 100) {
+            embedBuilder.setColor(Color.YELLOW);
+        }
 
         return embedBuilder;
     }

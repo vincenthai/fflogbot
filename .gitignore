@@ -1,6 +1,11 @@
 # target class folder
 build/
 
+.gradle/
+
+*.bin
+*.lock
+
 # Compiled class file
 *.class
 
