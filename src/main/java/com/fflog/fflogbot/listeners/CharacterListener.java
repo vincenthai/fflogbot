@@ -55,7 +55,7 @@ public class CharacterListener extends ListenerAdapter {
                 String server = m.group(2);
                 // handle the asphodelos tier
                 logger.info("processing asphodelos tier for...{}",charName);
-                asphodelosTier(charName, server, channel);
+                asphodelosTier(charName, server, message);
             }
         }
         else if(content.startsWith("$about")) {
@@ -64,18 +64,18 @@ public class CharacterListener extends ListenerAdapter {
         }
     }
 
-    private void asphodelosTier(String charName, String server, MessageChannel channel) {
+    private void asphodelosTier(String charName, String server, Message message) {
         Tier asphodelos = new Asphodelos();
         try {
-            responseHandler.handleEncounter(channel,asphodelos, charName, server, 78, 79, 80, 81, 82);
+            responseHandler.handleEncounter(asphodelos, charName, server, 78, 79, 80, 81, 82);
             EmbedBuilder embedBuilder = messageHandler.packMessage(asphodelos, charName, server);
             watcher.stop();
             embedBuilder.setFooter("Parse processing completed in: " + watcher.getLastTaskTimeMillis()/1000 + " secs");
-            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+            message.replyEmbeds(embedBuilder.build()).queue();
         }
         catch (RuntimeException e) {
             watcher.stop();
-            channel.sendMessageEmbeds(new EmbedBuilder()
+            message.replyEmbeds(new EmbedBuilder()
                     .setTitle("Failed to process " + WordUtils.capitalizeFully(charName) + " from " + WordUtils.capitalize(server))
                     .setImage("https://i.kym-cdn.com/photos/images/newsfeed/001/889/560/b85.gif").build()).queue();
         }
