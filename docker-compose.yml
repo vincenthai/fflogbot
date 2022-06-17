@@ -1,0 +1,9 @@
+services:
+  fflogbot:
+    build:
+      context: ./build/docker/
+      dockerfile: Dockerfile
+    image: fflogbot
+    container_name: fflogbot
+    env_file:
+      - .env

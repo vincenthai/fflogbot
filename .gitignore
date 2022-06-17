@@ -1,8 +1,12 @@
 # target class folder
 build/
 
+# dev environment
 .gradle/
 .idea/
+
+# environment vars
+*.env
 
 *.bin
 *.lock

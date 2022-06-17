@@ -12,6 +12,7 @@ other dependencies that handle OAuth2 and GraphQL queries to [fflogs](https://ww
 * IntelliJ (optional)
 * [Gradle](https://gradle.org/install/) 7.4.2+
 * [FFLogs](https://www.fflogs.com/) Account
+* [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 ## Usage
 * Checkout the repo and create a new file under `src/main/resources` called `application.properties`.
@@ -22,5 +23,9 @@ other dependencies that handle OAuth2 and GraphQL queries to [fflogs](https://ww
     * `graphql.client.oauth2.token-uri`
   * You can follow instructions provided by fflogs on how to populate those fields: [link](https://articles.fflogs.com/help/api-documentation)
   * Note: these steps are critical for getting access to the fflog GraphQL API
-* If you're using IntelliJ, you can create a runtime application using the class [`FflogbotApplication`](https://github.com/vincenthai/fflogbot/blob/master/src/test/java/com/fflog/fflogbot/FflogbotApplicationTests.java)
-  * You will also need to supply your Discord bot's token using the environment key `TOKEN`
+* Create a `.env` file and supply a environment variable with the key `TOKEN` and the value being your Discord bot's token
+* Run `./gradlew clean build`
+* Run `docker-compose up -d --force-recreate --build`
+  * `-d` will have the container run in detached mode
+  * `--force-recreate` will force container recreation even if the image hasn't changed
+  * `--build` rebuilds the docker image based on the `Dockerfile` generated via the [Gradle Docker Plugin](https://github.com/bmuschko/gradle-docker-plugin)
