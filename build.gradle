@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id "io.freefair.lombok" version "6.5.0-rc1"
     id 'org.springframework.boot' version '2.7.0'
+    id 'com.bmuschko.docker-spring-boot-application' version '6.7.0'
 }
 
 repositories {
@@ -29,4 +30,15 @@ java.sourceCompatibility = JavaVersion.VERSION_15
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+docker {
+    springBootApplication {
+        baseImage = 'amazoncorretto:17'
+        mainClassName = 'com.fflog.fflogbot.FflogbotApplication'
+    }
+}
+
+tasks.named('build') {
+    finalizedBy 'dockerCreateDockerfile'
 }

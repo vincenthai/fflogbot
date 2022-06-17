@@ -62,6 +62,9 @@ public class CharacterListener extends ListenerAdapter {
             channel.sendMessage(responseHandler.handleAbout()).queue();
             watcher.stop();
         }
+        else if(content.contains("$toxic")) {
+            message.reply("https://www.youtube.com/watch?v=LOZuxwVk7TU").queue();
+        }
     }
 
     private void asphodelosTier(String charName, String server, Message message) {
