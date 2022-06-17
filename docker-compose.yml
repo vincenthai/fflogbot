@@ -3,7 +3,7 @@ services:
     build:
       context: ./build/docker/
       dockerfile: Dockerfile
-    image: fflogbot
-    container_name: fflogbot
+    image: fapbeast/docker-pilot:fflogbot-v${version}
+    container_name: fflogbot-v${version}
     env_file:
       - .env
