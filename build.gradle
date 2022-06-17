@@ -5,8 +5,6 @@ plugins {
     id 'com.bmuschko.docker-spring-boot-application' version '6.7.0'
 }
 
-import com.bmuschko.gradle.docker.tasks.image.Dockerfile
-
 repositories {
     mavenLocal()
     maven {
