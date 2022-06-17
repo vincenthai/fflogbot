@@ -14,7 +14,7 @@ other dependencies that handle OAuth2 and GraphQL queries to [fflogs](https://ww
 * [FFLogs](https://www.fflogs.com/) Account
 * [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-## Usage
+## Usage (local w/ Docker)
 * Checkout the repo and create a new file under `src/main/resources` called `application.properties`.
   * You will need the following keys:
     * `graphql.client.url`
@@ -23,10 +23,18 @@ other dependencies that handle OAuth2 and GraphQL queries to [fflogs](https://ww
     * `graphql.client.oauth2.token-uri`
   * You can follow instructions provided by fflogs on how to populate those fields: [link](https://articles.fflogs.com/help/api-documentation)
   * Note: these steps are critical for getting access to the fflog GraphQL API
-* Create a `private.env` file and supply an environment variable with the key `TOKEN` and the value being your Discord bot's token
+* Create a `.env` file and supply an environment variable with the key `TOKEN` and the value being your Discord bot's token
+  * This environment file will be passed into the container via the `docker-compose.yml` file
 * Run `./gradlew clean build`
 * Run `docker-compose --env-file ./version.env up -d --force-recreate --build`
   * `--env-file <param>` allows for specifying the version through the `version.env` file
   * `-d` will have the container run in detached mode
   * `--force-recreate` will force container recreation even if the image hasn't changed
   * `--build` rebuilds the docker image based on the `Dockerfile` generated via the [Gradle Docker Plugin](https://github.com/bmuschko/gradle-docker-plugin)
+
+## Usage (Docker)
+* If you've access to our image registry, you can run the image using:
+* `docker run -d -e TOKEN=<token> <image>:<tag>`
+  * e.g. `docker run -d -e TOKEN=abc123 mydockerhubaccnt/repo:fflogbot-v0.5.2`
+  * `-d` runs the container in detached mode
+  * `-e` allows you to specify the `TOKEN` environment variable, which the bot will need.
