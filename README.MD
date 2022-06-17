@@ -23,9 +23,10 @@ other dependencies that handle OAuth2 and GraphQL queries to [fflogs](https://ww
     * `graphql.client.oauth2.token-uri`
   * You can follow instructions provided by fflogs on how to populate those fields: [link](https://articles.fflogs.com/help/api-documentation)
   * Note: these steps are critical for getting access to the fflog GraphQL API
-* Create a `.env` file and supply a environment variable with the key `TOKEN` and the value being your Discord bot's token
+* Create a `private.env` file and supply an environment variable with the key `TOKEN` and the value being your Discord bot's token
 * Run `./gradlew clean build`
-* Run `docker-compose up -d --force-recreate --build`
+* Run `docker-compose --env-file ./version.env up -d --force-recreate --build`
+  * `--env-file <param>` allows for specifying the version through the `version.env` file
   * `-d` will have the container run in detached mode
   * `--force-recreate` will force container recreation even if the image hasn't changed
   * `--build` rebuilds the docker image based on the `Dockerfile` generated via the [Gradle Docker Plugin](https://github.com/bmuschko/gradle-docker-plugin)

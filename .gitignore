@@ -6,7 +6,7 @@ build/
 .idea/
 
 # environment vars
-*.env
+.env
 
 *.bin
 *.lock
