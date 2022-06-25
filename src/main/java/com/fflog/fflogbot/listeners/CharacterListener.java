@@ -105,7 +105,7 @@ public class CharacterListener extends ListenerAdapter {
             embedBuilder.setFooter("Parse processing completed in: " + watcher.getLastTaskTimeMillis()/1000 + " secs");
             message.replyEmbeds(embedBuilder.build()).queue();
         }
-        catch (RuntimeException e) {
+        catch (Exception e) {
             watcher.stop();
             message.replyEmbeds(new EmbedBuilder()
                     .setTitle("Failed to process " + WordUtils.capitalizeFully(charName) + " from " + WordUtils.capitalize(server))

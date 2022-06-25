@@ -118,15 +118,15 @@ public class ResponseHandler {
         GraphQLResponse response = client.getData(reportQuery,util.getVarsForReport(reportCode,fightId));
         JsonNode reportData = response.get("reportData", JsonNode.class);
         // if someone's report hides a fight, we will lose visibility and get a null node
-        if(reportData.get("report") instanceof NullNode)
+        if(reportData.get("report") instanceof NullNode && attempts < 3)
             return debuffCount.get();
         JsonNode report = reportData.get("report").withArray("fights").get(0);
-        if(report== null && attempts < 3) {
+        if(report == null && attempts < 3) {
             return parseDebuffs(charName,reportNode,++attempts,tier);
         }
         else if (attempts >= 3) {
             logger.info("Reached max attempts {} trying to parse debuffs for this encounter. returning 0 and skipping", attempts);
-            return 0;
+            return debuffCount.get();
         }
         // package the identifier and map it back as vars to another graphql request to get the debuffs
         ReportIdentifier reportIdentifier = new ReportIdentifier(reportCode,fightId,
@@ -135,19 +135,25 @@ public class ResponseHandler {
                 tier.getDebuffId());
 
        response = client.getData(debuffQuery,util.getVarsForDebuff(reportIdentifier));
-       ArrayNode debuffs = response.get("reportData",JsonNode.class)
-               .get("report").get("table").get("data").withArray("auras");
-       if(tier instanceof Eden) {
-           debuffs.forEach(debuffEntity -> {
-               if (!debuffEntity.get("name").asText().equalsIgnoreCase(charName)) return;
-               debuffCount.set(debuffEntity.get("totalUses").intValue());
-           });
+       ArrayNode debuffs;
+       try {
+            debuffs = response.get("reportData", JsonNode.class)
+                .get("report").get("table").get("data").withArray("auras");
+           if(tier instanceof Eden) {
+               debuffs.forEach(debuffEntity -> {
+                   if (!debuffEntity.get("name").asText().equalsIgnoreCase(charName)) return;
+                   debuffCount.set(debuffEntity.get("totalUses").intValue());
+               });
+           }
+           else {
+               debuffs.forEach(debuffEntity -> {
+                   if (!debuffEntity.get("name").asText().equalsIgnoreCase(charName)) return;
+                   debuffCount.set(debuffEntity.withArray("appliedByAbilities").size());
+               });
+           }
        }
-       else {
-           debuffs.forEach(debuffEntity -> {
-               if (!debuffEntity.get("name").asText().equalsIgnoreCase(charName)) return;
-               debuffCount.set(debuffEntity.withArray("appliedByAbilities").size());
-           });
+       catch (Exception e) {
+           return debuffCount.get();
        }
 
        return debuffCount.get();
