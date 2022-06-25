@@ -7,6 +7,8 @@ where
   <char name> is a character's full name
 and
   <server> is the server where the character is located
+
+example: $log facchina ponti@gilgamesh
 ```
 The bot will crawl through the user's encounters and then dive into the report for each cleared fight to identify how many times that character **did a mechanic wrong** :upside_down:.
 
