@@ -1,7 +1,7 @@
 package com.fflog.fflogbot.handlers;
 
 import com.fflog.fflogbot.model.Rank;
-import com.fflog.fflogbot.model.Tier;
+import com.fflog.fflogbot.model.tiers.Tier;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;

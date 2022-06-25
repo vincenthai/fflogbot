@@ -2,7 +2,7 @@ This bot is written in Java using Spring Boot, JDA, and GraphQL.
 It authenticates to fflogs.com using OAuth2 client credentials to access the public /v2/client API
 Usage:
 ```
-$log <char name>;<server>
+$log <char name>@<server>
 where
   <char name> is a character's full name
 and

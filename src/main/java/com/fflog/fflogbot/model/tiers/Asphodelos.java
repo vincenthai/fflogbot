@@ -1,4 +1,4 @@
-package com.fflog.fflogbot.model;
+package com.fflog.fflogbot.model.tiers;
 
 import lombok.Getter;
 
@@ -16,4 +16,6 @@ public class Asphodelos extends Tier {
                     new AbstractMap.SimpleImmutableEntry<>(81,"Hesperos"),
                     new AbstractMap.SimpleImmutableEntry<>(82,"Hesperos II"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    public int debuffId = 1002911;
 }

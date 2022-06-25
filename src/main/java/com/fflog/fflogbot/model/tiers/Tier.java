@@ -1,5 +1,6 @@
-package com.fflog.fflogbot.model;
+package com.fflog.fflogbot.model.tiers;
 
+import com.fflog.fflogbot.model.Encounter;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ public abstract class Tier {
     public String errorMsg;
     public Map<Integer,String> encounter2Acronym;
     public String lodestoneId;
+    public int debuffId;
 
     public void addEncounter(Encounter encounter) {
         encounters.add(encounter);

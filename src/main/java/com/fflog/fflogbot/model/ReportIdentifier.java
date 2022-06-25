@@ -13,4 +13,5 @@ public class ReportIdentifier extends HandlerUtil.Variables {
     int id;
     float startTime;
     float endTime;
+    int debuffId;
 }

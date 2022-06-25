@@ -8,12 +8,11 @@ import com.fflog.fflogbot.client.ClientWrapper;
 import com.fflog.fflogbot.model.Encounter;
 import com.fflog.fflogbot.model.Rank;
 import com.fflog.fflogbot.model.ReportIdentifier;
-import com.fflog.fflogbot.model.Tier;
+import com.fflog.fflogbot.model.tiers.Eden;
+import com.fflog.fflogbot.model.tiers.Tier;
 import com.fflog.fflogbot.util.HandlerUtil;
 import graphql.kickstart.spring.webclient.boot.GraphQLResponse;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -44,11 +43,15 @@ public class ResponseHandler {
         return util.getAbout();
     }
 
-    public void handleEncounter(Tier asphodelos, String charName, String server, int... encounterIds) {
+    public String handleSupportedTiers() {
+        return util.getSupportedTiers();
+    }
+
+    public void handleEncounter(Tier tier, String charName, String server, Set<Integer> encounterIds) {
         logger.info("starting graphql gen for fflog apis...");
         reportQuery = util.getReportQuery();
         debuffQuery = util.getDebuffQuery();
-        Arrays.stream(encounterIds).forEach(encounterId -> {
+        encounterIds.stream().sorted().forEach(encounterId -> {
             logger.info("characterDetail graphql api starting...");
             watcher.start();
             GraphQLResponse response = client.getData(
@@ -75,14 +78,14 @@ public class ResponseHandler {
                 return;
             }
 
-            asphodelos.addEncounter(new Encounter(encounterId, totalKills, parseRanks(charName,ranks)));
+            tier.addEncounter(new Encounter(encounterId, totalKills, parseRanks(charName,ranks,tier)));
             // unfortunate repetitive call for now to set the lodestone id
             IntNode lodestoneId = (IntNode) characterData.get("character").get("lodestoneID");
-            asphodelos.setLodestoneId(lodestoneId.asText());
+            tier.setLodestoneId(lodestoneId.asText());
         });
     }
 
-    private List<Rank> parseRanks(String charName, ArrayNode ranksJsonNode) {
+    private List<Rank> parseRanks(String charName, ArrayNode ranksJsonNode, Tier tier) {
         List<JsonNode> rankNodes = new ArrayList<>();
         ranksJsonNode.forEach(rankNodes::add);
         try {
@@ -92,7 +95,7 @@ public class ResponseHandler {
                     rank.get("lockedIn").asBoolean(),
                     rank.get("rankPercent").asDouble(),
                     rank.get("spec").asText(),
-                    parseDebuffs(charName, rank.get("report"), 0)
+                    parseDebuffs(charName, rank.get("report"), 0, tier)
                 )
             ).collect(Collectors.toList());
             logger.info("completed rank and debuff query/parsing in...{} ms", watcher.getLastTaskTimeMillis());
@@ -106,7 +109,7 @@ public class ResponseHandler {
 //        return Collections.emptyList();
     }
 
-    private int parseDebuffs(String charName, JsonNode reportNode, int attempts) {
+    private int parseDebuffs(String charName, JsonNode reportNode, int attempts, Tier tier) {
         AtomicInteger debuffCount = new AtomicInteger(0);
         // get the report code and fight ID from the encounter
         String reportCode = reportNode.get("code").asText();
@@ -114,9 +117,12 @@ public class ResponseHandler {
         // using those values, make another graphql request to get the report start and end timestamps
         GraphQLResponse response = client.getData(reportQuery,util.getVarsForReport(reportCode,fightId));
         JsonNode reportData = response.get("reportData", JsonNode.class);
+        // if someone's report hides a fight, we will lose visibility and get a null node
+        if(reportData.get("report") instanceof NullNode)
+            return debuffCount.get();
         JsonNode report = reportData.get("report").withArray("fights").get(0);
         if(report== null && attempts < 3) {
-            return parseDebuffs(charName,reportNode,++attempts);
+            return parseDebuffs(charName,reportNode,++attempts,tier);
         }
         else if (attempts >= 3) {
             logger.info("Reached max attempts {} trying to parse debuffs for this encounter. returning 0 and skipping", attempts);
@@ -125,15 +131,24 @@ public class ResponseHandler {
         // package the identifier and map it back as vars to another graphql request to get the debuffs
         ReportIdentifier reportIdentifier = new ReportIdentifier(reportCode,fightId,
                 report.get("startTime").floatValue(),
-                report.get("endTime").floatValue());
+                report.get("endTime").floatValue(),
+                tier.getDebuffId());
 
        response = client.getData(debuffQuery,util.getVarsForDebuff(reportIdentifier));
        ArrayNode debuffs = response.get("reportData",JsonNode.class)
                .get("report").get("table").get("data").withArray("auras");
-       debuffs.forEach(debuffEntity -> {
-           if(!debuffEntity.get("name").asText().equalsIgnoreCase(charName)) return;
-           debuffCount.set(debuffEntity.withArray("appliedByAbilities").size());
-       });
+       if(tier instanceof Eden) {
+           debuffs.forEach(debuffEntity -> {
+               if (!debuffEntity.get("name").asText().equalsIgnoreCase(charName)) return;
+               debuffCount.set(debuffEntity.get("totalUses").intValue());
+           });
+       }
+       else {
+           debuffs.forEach(debuffEntity -> {
+               if (!debuffEntity.get("name").asText().equalsIgnoreCase(charName)) return;
+               debuffCount.set(debuffEntity.withArray("appliedByAbilities").size());
+           });
+       }
 
        return debuffCount.get();
     }
