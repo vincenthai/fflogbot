@@ -101,12 +101,4 @@ public class HandlerUtil {
         String code;
         int[] fightId;
     }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    private static class DebuffDataVariables extends Variables {
-        String reportIdentifier;
-        int ddId;
-    }
 }
