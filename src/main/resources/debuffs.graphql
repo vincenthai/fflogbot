@@ -1,7 +1,7 @@
-query($code:String $fightId:[Int] $startTime:Float $endTime:Float) {
+query($code:String $fightId:[Int] $startTime:Float $endTime:Float, $debuffId:Float) {
     reportData {
         report(code:$code) {
-            table(fightIDs:$fightId startTime:$startTime endTime:$endTime dataType:Debuffs abilityID:1002911)
+            table(fightIDs:$fightId startTime:$startTime endTime:$endTime dataType:Debuffs abilityID:$debuffId)
         }
     }
 }

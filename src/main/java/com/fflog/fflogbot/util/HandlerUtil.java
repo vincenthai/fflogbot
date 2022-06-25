@@ -50,6 +50,15 @@ public class HandlerUtil {
         }
     }
 
+    public String getSupportedTiers() {
+        try {
+            return new String(
+                    HandlerUtil.class.getClassLoader().getResourceAsStream( "supportedTiers.txt").readAllBytes());
+        } catch (IOException e) {
+            return "";
+        }
+    }
+
     public String getVarsForDebuff(ReportIdentifier reportIdentifier) {
         return getVarsAsJson(reportIdentifier);
     }
@@ -91,5 +100,13 @@ public class HandlerUtil {
     private static class ReportDataVariables extends Variables {
         String code;
         int[] fightId;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    private static class DebuffDataVariables extends Variables {
+        String reportIdentifier;
+        int ddId;
     }
 }
